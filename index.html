@@ -218,7 +218,7 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   .nav-links { display: none; }
   .nav-toggle { display: block; }
   .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 27, 24, 0.98); backdrop-filter: blur(20px); padding: 1.5rem 24px; gap: 1.25rem; animation: slideDown 0.3s ease; }
-  .community-strip-inner { grid-template-columns: repeat(2, 1fr); }
+  /* Keep 4-up thin band on mobile — photos become a subtle strip instead of dominating */
   .expect-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
   .heart-layout { grid-template-columns: 1fr; gap: 3rem; }
   .heart-image { max-width: 400px; margin: 0 auto; }
@@ -230,9 +230,15 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
 @media (max-width: 600px) {
   .container { padding: 0 20px; }
   .hero { min-height: 100svh; }
-  .hero-logo { width: 90px; margin-bottom: 1.5rem; }
-  .hero-actions { flex-direction: column; align-items: center; }
-  .btn-primary, .btn-secondary { width: 100%; max-width: 280px; text-align: center; }
+  .hero-logo { width: 80px; margin-bottom: 1.25rem; }
+  .hero-eyebrow { margin-bottom: 1rem; }
+  .hero h1 { margin-bottom: 1.25rem; }
+  .hero-sub { margin-bottom: 1.75rem; }
+  .hero-details { margin-bottom: 1.75rem; }
+  .hero-actions { flex-direction: column; align-items: center; gap: 0.75rem; }
+  .btn-primary, .btn-secondary { width: 100%; max-width: 280px; text-align: center; padding: 0.8rem 1.5rem; }
+  .hero-scroll { display: none; } /* Prevents overlap with stacked CTAs on short viewports */
+  .community-strip-inner { gap: 3px; padding: 3px; }
   .gather-photo-pair { grid-template-columns: 1fr; }
   .footer-links { flex-direction: column; gap: 2rem; }
 }
