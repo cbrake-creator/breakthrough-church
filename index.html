@@ -147,22 +147,20 @@ nav .container { display: flex; justify-content: space-between; align-items: cen
 .pillar-card p { font-family: var(--sans); font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 1.75; }
 
 .gather { padding: 7rem 0; background: var(--cream); color: var(--text-dark); }
-.gather-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
-.gather-main h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 400; color: var(--navy); margin-bottom: 1.5rem; }
-.gather-main p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--text-muted-dark); line-height: 1.8; margin-bottom: 1.5rem; }
-.gather-detail-list { list-style: none; margin: 2rem 0; display: flex; flex-direction: column; gap: 1.25rem; }
+.gather-layout { max-width: 640px; margin: 0 auto; }
+.gather-main h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 400; color: var(--navy); margin-bottom: 1.5rem; text-align: center; }
+.gather-main > p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--text-muted-dark); line-height: 1.8; margin-bottom: 1.5rem; text-align: center; }
+.gather-main .section-label { text-align: center; }
+.gather-detail-list { list-style: none; margin: 2.5rem 0 0; display: flex; flex-direction: column; gap: 1.25rem; }
 .gather-detail-item { display: flex; gap: 1rem; align-items: flex-start; }
 .gather-detail-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--sage-deep); color: var(--cream); border-radius: 50%; font-size: 0.9rem; }
 .gather-detail-text h4 { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.2rem; }
-.gather-detail-text p { font-size: 0.85rem; margin-bottom: 0; color: var(--text-muted-dark); }
+.gather-detail-text p { font-size: 0.85rem; margin-bottom: 0; color: var(--text-muted-dark); text-align: left; }
 .gather-detail-text a { color: var(--logo-red); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.5rem; display: inline-block; }
-.gather-visual { display: flex; flex-direction: column; gap: 1rem; }
-.gather-map { border-radius: 4px; overflow: hidden; height: 340px; }
-.gather-map iframe { width: 100%; height: 100%; border: none; }
-.gather-photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.gather-photo { aspect-ratio: 4/3; overflow: hidden; border-radius: 4px; background: var(--navy); }
-.gather-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-.gather-photo:hover img { transform: scale(1.04); }
+.gather-detail-link { display: flex; gap: 1rem; align-items: flex-start; color: inherit; text-decoration: none; padding: 0.5rem; margin: -0.5rem; border-radius: 6px; transition: background 0.2s ease; width: 100%; }
+.gather-detail-link:hover { background: rgba(107, 29, 42, 0.06); }
+.gather-detail-link:hover .gather-detail-text h4 { color: var(--logo-red); }
+.gather-detail-hint { color: var(--logo-red); font-weight: 600; display: inline-block; margin-left: 0.25rem; opacity: 0.85; }
 
 .faq { padding: 7rem 0; background: var(--navy); }
 .faq-header { text-align: center; margin-bottom: 3.5rem; }
@@ -223,7 +221,6 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   .heart-layout { grid-template-columns: 1fr; gap: 3rem; }
   .heart-image { max-width: 400px; margin: 0 auto; }
   .pillars-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
-  .gather-layout { grid-template-columns: 1fr; }
   .resources-grid { grid-template-columns: 1fr; }
   .footer-layout { flex-direction: column; gap: 2.5rem; }
 }
@@ -239,7 +236,6 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   .btn-primary, .btn-secondary { width: 100%; max-width: 280px; text-align: center; padding: 0.8rem 1.5rem; }
   .hero-scroll { display: none; } /* Prevents overlap with stacked CTAs on short viewports */
   .community-strip-inner { gap: 3px; padding: 3px; }
-  .gather-photo-pair { grid-template-columns: 1fr; }
   .footer-links { flex-direction: column; gap: 2rem; }
 }
 </style>
@@ -418,11 +414,13 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
             </div>
           </li>
           <li class="gather-detail-item">
-            <div class="gather-detail-icon">📍</div>
-            <div class="gather-detail-text">
-              <h4>1320 Holly Dr, Richardson, TX 75080</h4>
-              <p>Shared space with Loft City Church. Parking available on site.</p>
-            </div>
+            <a class="gather-detail-link" href="https://www.google.com/maps/search/?api=1&query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">
+              <div class="gather-detail-icon">📍</div>
+              <div class="gather-detail-text">
+                <h4>1320 Holly Dr, Richardson, TX 75080</h4>
+                <p>Shared space with Loft City Church. Parking available on site. <span class="gather-detail-hint">Tap for directions →</span></p>
+              </div>
+            </a>
           </li>
           <li class="gather-detail-item">
             <div class="gather-detail-icon">☕</div>
@@ -434,14 +432,6 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
           </li>
         </ul>
       </div>
-      <div class="gather-visual animate-on-scroll">
-        <div class="gather-map">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3346.0!2d-96.7298!3d32.9542!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x864c21e5cf296101%3A0x4a0fd6c29e98280f!2s1320+Holly+Dr%2C+Richardson%2C+TX+75080!5e0!3m2!1sen!2sus!4v1" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-        <div class="gather-photo-pair">
-          <div class="gather-photo"><img src="https://images.unsplash.com/photo-1507838153414-b4b713384a76?w=600&q=80" alt="Music for our Saturday gathering" loading="lazy"></div>
-          <div class="gather-photo"><img src="https://images.unsplash.com/photo-1508025690966-2a9a1957da31?w=600&q=80" alt="Worship on Saturdays" loading="lazy"></div>
-        </div>
       </div>
     </div>
   </div>
