@@ -87,6 +87,19 @@ nav .container { display: flex; justify-content: space-between; align-items: cen
 .hero-scroll span { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
 .hero-scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--sage), transparent); animation: gentlePulse 2.5s ease infinite; }
 
+/* Sub-nav pill strip (Storyhill-style quick-links bar under hero) */
+.hero-subnav { background: var(--charcoal); border-bottom: 1px solid rgba(250, 246, 240, 0.08); padding: 1.1rem 0; position: relative; z-index: 2; }
+.hero-subnav .container { display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
+.hero-subnav a { display: inline-flex; align-items: center; padding: 0.55rem 1.35rem; border: 1px solid rgba(250, 246, 240, 0.22); border-radius: 999px; font-family: var(--sans); font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cream); transition: all 0.3s ease; white-space: nowrap; }
+.hero-subnav a:hover { background: rgba(250, 246, 240, 0.08); border-color: rgba(250, 246, 240, 0.4); }
+.hero-subnav a.hero-subnav-primary { background: var(--logo-red); border-color: var(--logo-red); }
+.hero-subnav a.hero-subnav-primary:hover { background: var(--logo-red-soft); border-color: var(--logo-red-soft); }
+
+/* Vertical rotated edge labels (Storyhill's "THE STORY" / "YOUR CALL" treatment) */
+.vertical-label { position: absolute; top: 50%; font-family: var(--sans); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--sage); white-space: nowrap; z-index: 3; opacity: 0.75; pointer-events: none; }
+.vertical-label-left { left: 1.5rem; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
+.vertical-label-right { right: 1.5rem; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+
 .community-strip { padding: 0; background: var(--cream); position: relative; }
 .community-strip-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; background: var(--cream); }
 .community-photo { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--navy); }
@@ -215,6 +228,10 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .nav-toggle { display: block; }
+  .vertical-label { display: none; }
+  .hero-subnav { padding: 0.85rem 0; }
+  .hero-subnav .container { gap: 0.4rem; }
+  .hero-subnav a { padding: 0.45rem 0.95rem; font-size: 0.65rem; letter-spacing: 0.08em; }
   .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 27, 24, 0.98); backdrop-filter: blur(20px); padding: 1.5rem 24px; gap: 1.25rem; animation: slideDown 0.3s ease; }
   /* Keep 4-up thin band on mobile — photos become a subtle strip instead of dominating */
   .expect-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
@@ -285,6 +302,16 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   </div>
 </section>
 
+<nav class="hero-subnav" aria-label="Quick links">
+  <div class="container">
+    <a href="#gather" class="hero-subnav-primary">Plan Your Visit</a>
+    <a href="https://listen.breakthroughdallas.com/">Listen</a>
+    <a href="https://breakthrough-church-493458.churchcenter.com/giving">Give</a>
+    <a href="#faq">First Visit</a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">Get Directions</a>
+  </div>
+</nav>
+
 <section class="community-strip">
   <div class="community-strip-inner">
     <div class="community-photo"><img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=600&q=80" alt="Worshipping Jesus together" loading="lazy"></div>
@@ -335,6 +362,7 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
 </section>
 
 <section class="heart" id="about">
+  <span class="vertical-label vertical-label-left" aria-hidden="true">Our Heart</span>
   <div class="container">
     <div class="heart-layout">
       <div class="heart-image animate-on-scroll">
@@ -363,6 +391,7 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
 </section>
 
 <section class="pillars">
+  <span class="vertical-label vertical-label-right" aria-hidden="true">Who We Are</span>
   <div class="container">
     <div class="pillars-header animate-on-scroll">
       <span class="section-label">Who We Are</span>
