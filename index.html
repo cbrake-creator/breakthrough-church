@@ -136,6 +136,16 @@ nav .container { display: flex; justify-content: space-between; align-items: cen
 .heart-signature-text { font-family: var(--sans); font-size: 0.85rem; color: var(--cream); font-weight: 500; }
 .heart-signature-text span { display: block; font-weight: 300; font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
 
+/* Cream inset panel for Our Heart (Storyhill-style offset rectangle) */
+.heart-inset { background: var(--cream); color: var(--text-dark); padding: 2.75rem 2.5rem; border-radius: 6px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35); position: relative; }
+.heart-inset .section-label { color: var(--sage-deep); }
+.heart-inset h2 { color: var(--navy); }
+.heart-inset h2 em { color: var(--sage-deep); }
+.heart-inset p { color: var(--text-muted-dark); }
+.heart-inset .heart-signature-photo { border-color: var(--sage-deep); }
+.heart-inset .heart-signature-text { color: var(--navy); }
+.heart-inset .heart-signature-text span { color: var(--text-muted-dark); }
+
 .scripture-banner { padding: 5rem 0; background: var(--sage-deep); text-align: center; position: relative; overflow: hidden; }
 .scripture-banner::before { content: '\201C'; position: absolute; top: -1rem; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 15rem; color: rgba(250, 246, 240, 0.08); line-height: 1; pointer-events: none; }
 .scripture-banner blockquote { font-family: var(--serif); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 400; font-style: italic; color: var(--cream); line-height: 1.5; max-width: 750px; margin: 0 auto 1.5rem; position: relative; z-index: 1; }
@@ -200,6 +210,13 @@ nav .container { display: flex; justify-content: space-between; align-items: cen
 .resource-card p { font-family: var(--sans); font-size: 0.88rem; font-weight: 300; color: var(--text-muted); line-height: 1.7; }
 .resource-arrow { display: inline-block; margin-top: 1.25rem; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--logo-red); }
 
+/* 3-pill info band (Storyhill-style) */
+.resources-pill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 1000px; margin: 0 auto; }
+.resource-pill { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.5rem 2.25rem; background: var(--cream); color: var(--text-dark); border-radius: 999px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
+.resource-pill:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); background: var(--warm-white); }
+.resource-pill-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.22em; color: var(--sage-deep); }
+.resource-pill-text { font-family: var(--sans); font-size: 0.8rem; font-weight: 400; color: var(--text-muted-dark); line-height: 1.5; }
+
 .cta { padding: 6rem 0; background: var(--sage-deep); text-align: center; position: relative; overflow: hidden; }
 .cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(250, 246, 240, 0.1) 0%, transparent 60%); }
 .cta-logo { width: 60px; height: auto; margin: 0 auto 1.5rem; opacity: 0.85; filter: brightness(0) invert(1); position: relative; z-index: 2; }
@@ -239,6 +256,8 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   .heart-image { max-width: 400px; margin: 0 auto; }
   .pillars-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
   .resources-grid { grid-template-columns: 1fr; }
+  .resources-pill-grid { grid-template-columns: 1fr; max-width: 420px; }
+  .resource-pill { padding: 1.25rem 1.75rem; }
   .footer-layout { flex-direction: column; gap: 2.5rem; }
 }
 @media (max-width: 600px) {
@@ -370,7 +389,7 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
           <img src="https://framerusercontent.com/images/ORc24zBgDwtT7IMcqG6WjtTEv4.png?width=376&height=376" alt="Josh Brake, Lead Minister" loading="lazy">
         </div>
       </div>
-      <div class="heart-content animate-on-scroll">
+      <div class="heart-content heart-inset animate-on-scroll">
         <span class="section-label">Our Heart</span>
         <h2>The Lord is moving<br>in <em>Dallas</em></h2>
         <p>People are being healed of sickness, delivered from darkness, and saved by the presence and power of Jesus. Our heart at Breakthrough Church is to partner with the Spirit to see more people experience this eternal life now.</p>
@@ -509,21 +528,21 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
 <section class="resources" id="listen">
   <div class="container">
     <div class="resources-header animate-on-scroll">
-      <span class="section-label">Resources</span>
+      <span class="section-label">Stay Engaged</span>
       <h2>Go Deeper</h2>
     </div>
-    <div class="resources-grid">
-      <a href="https://listen.breakthroughdallas.com/" class="resource-card animate-on-scroll">
-        <span class="resource-label">Podcast & Teaching</span>
-        <h3>The Breakthrough Church Podcast</h3>
-        <p>Weekly teachings on the life, ministry, and mission of the church. Listen wherever you get your podcasts.</p>
-        <span class="resource-arrow">Listen Now →</span>
+    <div class="resources-pill-grid animate-on-scroll">
+      <a href="https://listen.breakthroughdallas.com/" class="resource-pill">
+        <span class="resource-pill-label">Listen</span>
+        <span class="resource-pill-text">Weekly teachings — wherever you get your podcasts</span>
       </a>
-      <a href="mailto:hey@bd.church" class="resource-card animate-on-scroll">
-        <span class="resource-label">Stay Connected</span>
-        <h3>Newsletter</h3>
-        <p>Stories of breakthrough in our community. Updates on gatherings, events, and what God is doing in Dallas.</p>
-        <span class="resource-arrow">Sign Up →</span>
+      <a href="mailto:hey@bd.church?subject=Newsletter%20signup" class="resource-pill">
+        <span class="resource-pill-label">Stay in Touch</span>
+        <span class="resource-pill-text">Stories of breakthrough delivered to your inbox</span>
+      </a>
+      <a href="https://breakthrough-church-493458.churchcenter.com/giving" class="resource-pill">
+        <span class="resource-pill-label">Give</span>
+        <span class="resource-pill-text">Partner with us as we carry the gospel to Dallas</span>
       </a>
     </div>
   </div>
