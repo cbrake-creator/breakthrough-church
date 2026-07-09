@@ -11,274 +11,257 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  /* Crimson / gold / warm-dark palette — legacy names kept for minimal diff */
-  --navy: #1E1B18;            /* dark warm brown base */
-  --navy-deep: #141110;       /* deepest brown/near-black */
-  --navy-light: #2A2420;      /* charcoal-warm */
-  --sage: #C8A455;            /* gold accent (labels, emphasis) */
-  --sage-soft: #E8D5A3;       /* light gold */
-  --sage-deep: #6B1D2A;       /* burgundy — used on scripture banner & CTA */
+  --dark: #1E1B18;
+  --dark-deep: #141110;
+  --charcoal: #15100d;
+  --burgundy: #6B1D2A;
+  --burgundy-soft: #8B2D3A;
+  --gold: #C8A455;
+  --gold-light: #E8D5A3;
   --cream: #FAF6F0;
   --cream-mid: #EDE6DA;
-  --cream-light: #FFFCF7;
-  --warm-white: #FFFCF7;
-  --logo-red: #6B1D2A;        /* burgundy for buttons */
-  --logo-red-soft: #8B2D3A;   /* burgundy hover */
-  --charcoal: #15100d;
+  --cream-white: #FFFCF7;
+  --ink: #2A2420;
   --text-light: #FAF6F0;
-  --text-dark: #2A2420;
-  --text-muted: rgba(250, 246, 240, 0.6);
-  --text-muted-dark: rgba(42, 36, 32, 0.55);
+  --muted-light: rgba(250, 246, 240, 0.65);
+  --muted-dark: rgba(42, 36, 32, 0.6);
   --serif: 'Cormorant Garamond', 'Georgia', serif;
   --sans: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --bezel: clamp(10px, 1.8vw, 26px);
+  --pad: clamp(24px, 3.5vw, 56px);
 }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; font-size: 16px; -webkit-font-smoothing: antialiased; }
-body { font-family: var(--sans); color: var(--text-light); background: var(--navy); line-height: 1.6; overflow-x: hidden; }
+body { font-family: var(--sans); color: var(--ink); background: var(--dark); line-height: 1.6; }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
-.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
-.container-narrow { max-width: 800px; margin: 0 auto; padding: 0 24px; }
-.section-label { font-family: var(--sans); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sage); margin-bottom: 1.25rem; display: block; }
-.section-label-dark { color: var(--sage-deep); }
-.section-label-red { color: var(--logo-red); }
 
-@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+/* ============ THE BEZEL FRAME ============ */
+.bezel { position: fixed; inset: 0; pointer-events: none; z-index: 900; box-shadow: inset 0 0 0 var(--bezel) var(--dark); }
+.page { margin: var(--bezel); border-radius: 12px; overflow: hidden; background: var(--cream); position: relative; }
+
+/* ============ SHARED GRAMMAR ============ */
+.label { font-family: var(--sans); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; display: block; }
+.chip { display: inline-block; border: 1px solid var(--ink); border-radius: 999px; padding: 0.45rem 1.1rem; font-family: var(--sans); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink); }
+.container { max-width: 1240px; margin: 0 auto; padding-inline: clamp(20px, 4vw, 64px); }
+.v-label { position: absolute; top: 0; right: 0; writing-mode: vertical-rl; font-family: var(--sans); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; padding: clamp(20px, 2.5vw, 36px) 13px; border-left: 1px solid currentColor; opacity: 0.7; pointer-events: none; }
+.pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 0.6rem 1.4rem; font-family: var(--sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.25s ease; white-space: nowrap; }
+.arrow { display: inline-block; transition: transform 0.2s ease; }
+a:hover .arrow { transform: translateX(4px); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes gentlePulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.75; } }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
 
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 0; transition: all 0.4s ease; background: transparent; }
-nav.scrolled { background: rgba(30, 27, 24, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0.65rem 0; box-shadow: 0 1px 0 rgba(200, 164, 85, 0.1); }
-nav .container { display: flex; justify-content: space-between; align-items: center; }
-.nav-brand { display: flex; align-items: center; gap: 0.75rem; }
-.nav-logo-mark { width: 34px; height: 34px; flex-shrink: 0; }
+/* ============ NAV (over hero) ============ */
+nav.main-nav { position: absolute; top: 0; left: 0; right: 0; z-index: 20; padding: 1.4rem 0; }
+nav.main-nav .container { display: flex; justify-content: space-between; align-items: center; }
+.nav-brand { display: flex; align-items: center; gap: 0.7rem; }
+.nav-logo-mark { width: 36px; height: 36px; flex-shrink: 0; }
 .nav-logo-mark img { width: 100%; height: 100%; object-fit: contain; }
-.nav-logo-text { font-family: var(--sans); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream); }
-.nav-links { display: flex; gap: 2.25rem; align-items: center; list-style: none; }
-.nav-links a { font-family: var(--sans); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); transition: color 0.3s ease; }
+.nav-logo-text { font-family: var(--sans); font-weight: 600; font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cream); }
+.nav-links { display: flex; gap: 2rem; align-items: center; list-style: none; }
+.nav-links a { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 246, 240, 0.75); transition: color 0.25s ease; }
 .nav-links a:hover { color: var(--cream); }
-.nav-cta { background: var(--logo-red) !important; color: var(--cream) !important; padding: 0.5rem 1.25rem !important; border-radius: 3px; font-size: 0.72rem !important; letter-spacing: 0.12em !important; transition: background 0.3s ease !important; }
-.nav-cta:hover { background: var(--logo-red-soft) !important; }
-.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-links a.nav-give { border: 1px solid rgba(250, 246, 240, 0.4); border-radius: 999px; padding: 0.45rem 1.2rem; color: var(--cream); }
+.nav-links a.nav-give:hover { background: var(--burgundy); border-color: var(--burgundy); }
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; z-index: 30; }
 .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--cream); margin: 5px 0; transition: all 0.3s ease; }
 
-.hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; background: var(--navy-deep); }
-.hero-bg { position: absolute; inset: 0; background-image: url("https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=1800&q=80"); background-size: cover; background-position: center; opacity: 0.35; }
-.hero-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 35%, rgba(30, 27, 24, 0.75) 0%, rgba(30, 27, 24, 0.95) 70%, var(--navy-deep) 100%); }
-.hero-grain { position: absolute; inset: 0; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); background-size: 200px; }
-.hero-content { position: relative; z-index: 2; padding: 0 24px; max-width: 900px; animation: fadeUp 1.2s ease forwards; }
-.hero-logo { width: 120px; height: auto; margin: 0 auto 2rem; animation: fadeIn 1.4s ease 0.1s both; filter: drop-shadow(0 6px 24px rgba(107, 29, 42, 0.35)); }
-.hero-eyebrow { font-family: var(--sans); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: var(--sage); margin-bottom: 1.5rem; animation: fadeIn 1s ease 0.3s both; }
-.hero h1 { font-family: var(--serif); font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 400; line-height: 1.1; color: var(--cream); margin-bottom: 1.75rem; letter-spacing: -0.01em; animation: fadeUp 1s ease 0.4s both; }
-.hero h1 em { font-style: italic; color: var(--sage); }
-.hero-sub { font-family: var(--sans); font-size: 1.05rem; font-weight: 300; line-height: 1.7; color: var(--text-muted); max-width: 560px; margin: 0 auto 2.5rem; animation: fadeUp 1s ease 0.6s both; }
-.hero-details { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-bottom: 2.5rem; animation: fadeUp 1s ease 0.7s both; }
-.hero-detail { font-family: var(--sans); font-size: 0.9rem; font-weight: 500; color: var(--cream); letter-spacing: 0.04em; }
-.hero-detail-muted { font-weight: 400; color: var(--text-muted); font-size: 0.82rem; }
-.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; animation: fadeUp 1s ease 0.8s both; }
-.btn-primary { display: inline-block; background: var(--logo-red); color: var(--cream); padding: 0.85rem 2.25rem; font-family: var(--sans); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 3px; border: none; cursor: pointer; transition: all 0.3s ease; }
-.btn-primary:hover { background: var(--logo-red-soft); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(107, 29, 42, 0.3); }
-.btn-secondary { display: inline-block; background: transparent; color: var(--cream); padding: 0.85rem 2.25rem; font-family: var(--sans); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; border-radius: 3px; border: 1px solid rgba(250, 246, 240, 0.25); cursor: pointer; transition: all 0.3s ease; }
-.btn-secondary:hover { border-color: var(--sage); background: rgba(200, 164, 85, 0.08); color: var(--sage-soft); }
-.hero-scroll { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; animation: fadeIn 1s ease 1.5s both; }
-.hero-scroll span { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); }
-.hero-scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--sage), transparent); animation: gentlePulse 2.5s ease infinite; }
+/* ============ HERO ============ */
+.hero { position: relative; min-height: min(92svh, 860px); display: flex; align-items: flex-end; overflow: hidden; background: var(--dark-deep); }
+.hero-bg { position: absolute; inset: 0; background-image: url("https://images.unsplash.com/photo-1438232992991-995b7058bbb3?w=1800&q=80"); background-size: cover; background-position: center 30%; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top right, rgba(20, 17, 16, 0.82) 0%, rgba(20, 17, 16, 0.35) 55%, rgba(20, 17, 16, 0.25) 100%); }
+.hero-grain { position: absolute; inset: 0; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); background-size: 200px; }
+.hero-content { position: relative; z-index: 2; width: 100%; padding: 0 clamp(24px, 5vw, 72px) clamp(36px, 7vh, 80px); animation: fadeUp 1.1s ease both; }
+.hero-eyebrow { font-family: var(--sans); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.34em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; animation: fadeIn 1s ease 0.3s both; }
+.hero h1 { font-family: var(--serif); font-size: clamp(2.9rem, 7vw, 5.6rem); font-weight: 400; line-height: 1.02; color: var(--cream); letter-spacing: -0.01em; max-width: 14ch; margin-bottom: 1.5rem; }
+.hero h1 em { font-style: italic; color: var(--gold); }
+.hero-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; font-family: var(--sans); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(250, 246, 240, 0.85); animation: fadeIn 1s ease 0.6s both; }
+.hero-meta .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); flex-shrink: 0; }
 
-/* Sub-nav pill strip (Storyhill-style quick-links bar under hero) */
-.hero-subnav { background: var(--charcoal); border-bottom: 1px solid rgba(250, 246, 240, 0.08); padding: 1.1rem 0; position: relative; z-index: 2; }
-.hero-subnav .container { display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap; }
-.hero-subnav a { display: inline-flex; align-items: center; padding: 0.55rem 1.35rem; border: 1px solid rgba(250, 246, 240, 0.22); border-radius: 999px; font-family: var(--sans); font-size: 0.72rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--cream); transition: all 0.3s ease; white-space: nowrap; }
-.hero-subnav a:hover { background: rgba(250, 246, 240, 0.08); border-color: rgba(250, 246, 240, 0.4); }
-.hero-subnav a.hero-subnav-primary { background: var(--logo-red); border-color: var(--logo-red); }
-.hero-subnav a.hero-subnav-primary:hover { background: var(--logo-red-soft); border-color: var(--logo-red-soft); }
+/* ============ QUICK-LINKS BAR ============ */
+.quickbar { background: var(--charcoal); padding: 1rem clamp(20px, 4vw, 64px); display: flex; align-items: center; gap: 1.25rem; position: relative; z-index: 2; }
+.quickbar .label { color: var(--gold); flex-shrink: 0; }
+.quickbar-pills { display: flex; gap: 0.55rem; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+.quickbar-pills::-webkit-scrollbar { display: none; }
+.quickbar-pills a { border: 1px solid rgba(250, 246, 240, 0.28); color: var(--cream); border-radius: 999px; padding: 0.5rem 1.2rem; font-family: var(--sans); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.25s ease; white-space: nowrap; }
+.quickbar-pills a:hover { background: rgba(250, 246, 240, 0.1); border-color: rgba(250, 246, 240, 0.5); }
+.quickbar-pills a.primary { background: var(--burgundy); border-color: var(--burgundy); }
+.quickbar-pills a.primary:hover { background: var(--burgundy-soft); border-color: var(--burgundy-soft); }
 
-/* Vertical rotated edge labels (Storyhill's "THE STORY" / "YOUR CALL" treatment) */
-.vertical-label { position: absolute; top: 50%; font-family: var(--sans); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--sage); white-space: nowrap; z-index: 3; opacity: 0.75; pointer-events: none; }
-.vertical-label-left { left: 1.5rem; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
-.vertical-label-right { right: 1.5rem; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+/* ============ WELCOME: chip + statement + photo strip ============ */
+.welcome { padding: clamp(72px, 11vh, 130px) 0 clamp(56px, 8vh, 96px); text-align: center; background: var(--cream); }
+.welcome-logo { width: 54px; height: 54px; margin: 0 auto 1.4rem; }
+.welcome-statement { font-family: var(--serif); font-size: clamp(1.7rem, 3.4vw, 2.9rem); font-weight: 400; line-height: 1.25; color: var(--ink); max-width: 24ch; margin: 2.2rem auto 0; }
+.welcome-statement em { font-style: italic; color: var(--burgundy); }
+.photo-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(8px, 1.2vw, 14px); max-width: 780px; margin: clamp(40px, 6vh, 64px) auto 0; padding-inline: 20px; }
+.photo-strip .ps-item { aspect-ratio: 1; overflow: hidden; }
+.photo-strip img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) contrast(0.97); transition: transform 0.7s ease, filter 0.4s ease; }
+.photo-strip .ps-item:hover img { transform: scale(1.05); filter: saturate(1) contrast(1); }
 
-.community-strip { padding: 0; background: var(--cream); position: relative; }
-.community-strip-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; background: var(--cream); }
-.community-photo { position: relative; aspect-ratio: 1/1; overflow: hidden; background: var(--navy); }
-.community-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; filter: saturate(0.9); }
-.community-photo:hover img { transform: scale(1.05); }
-.community-photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(30, 27, 24, 0.15), transparent 40%); pointer-events: none; }
+/* ============ MOSAIC (shared) ============ */
+.mosaic { display: grid; grid-template-columns: repeat(12, 1fr); max-width: 1240px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 64px); }
+.mosaic-section { background: var(--cream); padding-block: clamp(48px, 8vh, 110px); }
+.tile { position: relative; padding: var(--pad); }
+.tile-dark { background: var(--dark); color: var(--text-light); }
+.tile-burgundy { background: var(--burgundy); color: var(--text-light); }
+.tile-gold { background: var(--gold); color: var(--ink); }
+.tile-outline { background: var(--cream-white); color: var(--ink); outline: 1px solid var(--ink); outline-offset: -1px; }
+.tile-photo { padding: 0; overflow: hidden; }
+.tile-photo img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.88); }
+.tile .label { margin-bottom: 1.1rem; }
+.tile-dark .label, .tile-burgundy .label { color: var(--gold); }
+.tile-outline .label, .tile-gold .label { color: var(--burgundy); }
+.tile h3 { font-family: var(--serif); font-size: clamp(1.5rem, 2.6vw, 2.2rem); font-weight: 500; line-height: 1.12; margin-bottom: 1rem; }
+.tile p { font-family: var(--sans); font-size: 0.9rem; font-weight: 300; line-height: 1.75; max-width: 46ch; }
+.tile-dark p, .tile-burgundy p { color: var(--muted-light); }
+.tile-outline p, .tile-gold p { color: var(--muted-dark); }
+.tile-gold p { color: rgba(42, 36, 32, 0.72); }
+.tile-dark .v-label { color: var(--gold); }
 
-.expect { padding: 7rem 0 6rem; background: var(--cream); color: var(--text-dark); }
-.expect-header { text-align: center; margin-bottom: 4rem; }
-.expect-header h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--navy); margin-bottom: 1rem; }
-.expect-header p { font-family: var(--sans); font-size: 1rem; font-weight: 300; color: var(--text-muted-dark); max-width: 600px; margin: 0 auto; line-height: 1.7; }
-.expect-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-.expect-card { padding: 0; background: var(--warm-white); border-radius: 4px; overflow: hidden; transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(42, 36, 32, 0.06); }
-.expect-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(42, 36, 32, 0.1); }
-.expect-card-image { aspect-ratio: 4/3; overflow: hidden; background: var(--navy); }
-.expect-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
-.expect-card:hover .expect-card-image img { transform: scale(1.05); }
-.expect-card-body { padding: 1.75rem 1.75rem 2rem; }
-.expect-card h3 { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; }
-.expect-card p { font-family: var(--sans); font-size: 0.88rem; font-weight: 300; color: var(--text-muted-dark); line-height: 1.75; }
-
-.heart { padding: 7rem 0; background: var(--navy); position: relative; overflow: hidden; }
-.heart::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--sage), transparent); opacity: 0.25; }
-.heart-layout { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: center; }
-.heart-image { position: relative; }
-.heart-image-frame { position: relative; border-radius: 4px; overflow: hidden; aspect-ratio: 4/5; background: var(--navy-light); }
-.heart-image-frame img { width: 100%; height: 100%; object-fit: cover; }
-.heart-content h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 400; color: var(--cream); line-height: 1.2; margin-bottom: 1.75rem; }
-.heart-content h2 em { font-style: italic; color: var(--sage); }
-.heart-content p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--text-muted); line-height: 1.8; margin-bottom: 1.25rem; }
-.heart-signature { margin-top: 2rem; display: flex; align-items: center; gap: 1rem; }
-.heart-signature-photo { width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 2px solid var(--sage); }
+/* Mosaic 1 — Our Heart */
+.m1-heart { grid-column: 1 / 8; grid-row: 1; padding-right: clamp(56px, 7vw, 100px); padding-bottom: calc(var(--pad) + 3.5rem); }
+.m1-scripture { grid-column: 7 / 13; grid-row: 2; margin-top: -5rem; z-index: 2; align-self: start; display: flex; flex-direction: column; justify-content: center; min-height: 320px; }
+.m1-photo { grid-column: 2 / 6; grid-row: 2; margin-top: 4rem; z-index: 1; align-self: start; aspect-ratio: 1 / 1.05; }
+.m1-scripture blockquote { font-family: var(--serif); font-size: clamp(1.15rem, 1.9vw, 1.55rem); font-weight: 400; font-style: italic; line-height: 1.45; color: var(--cream); margin-bottom: 1.1rem; }
+.m1-scripture cite { font-family: var(--sans); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); font-style: normal; }
+.heart-signature { margin-top: 1.75rem; display: flex; align-items: center; gap: 0.9rem; }
+.heart-signature-photo { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; border: 1px solid var(--gold); flex-shrink: 0; }
 .heart-signature-photo img { width: 100%; height: 100%; object-fit: cover; }
-.heart-signature-text { font-family: var(--sans); font-size: 0.85rem; color: var(--cream); font-weight: 500; }
-.heart-signature-text span { display: block; font-weight: 300; font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.heart-signature-text { font-family: var(--sans); font-size: 0.82rem; color: var(--cream); font-weight: 500; }
+.heart-signature-text span { display: block; font-weight: 300; font-size: 0.72rem; color: var(--muted-light); margin-top: 2px; }
 
-/* Cream inset panel for Our Heart (Storyhill-style offset rectangle) */
-.heart-inset { background: var(--cream); color: var(--text-dark); padding: 2.75rem 2.5rem; border-radius: 6px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35); position: relative; }
-.heart-inset .section-label { color: var(--sage-deep); }
-.heart-inset h2 { color: var(--navy); }
-.heart-inset h2 em { color: var(--sage-deep); }
-.heart-inset p { color: var(--text-muted-dark); }
-.heart-inset .heart-signature-photo { border-color: var(--sage-deep); }
-.heart-inset .heart-signature-text { color: var(--navy); }
-.heart-inset .heart-signature-text span { color: var(--text-muted-dark); }
+/* Mosaic 2 — What to Expect */
+.m2-intro { grid-column: 1 / 6; grid-row: 1; padding-bottom: calc(var(--pad) + 2.5rem); min-height: 340px; }
+.m2-photo1 { grid-column: 6 / 9; grid-row: 1; }
+.m2-worship { grid-column: 9 / 13; grid-row: 1; }
+.m2-teaching { grid-column: 4 / 9; grid-row: 2; margin-top: -4.5rem; z-index: 2; align-self: start; }
+.m2-photo2 { grid-column: 1 / 4; grid-row: 2; }
+.m2-healing { grid-column: 9 / 13; grid-row: 2; align-self: start; min-height: 300px; }
 
-.scripture-banner { padding: 5rem 0; background: var(--sage-deep); text-align: center; position: relative; overflow: hidden; }
-.scripture-banner::before { content: '\201C'; position: absolute; top: -1rem; left: 50%; transform: translateX(-50%); font-family: var(--serif); font-size: 15rem; color: rgba(250, 246, 240, 0.08); line-height: 1; pointer-events: none; }
-.scripture-banner blockquote { font-family: var(--serif); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 400; font-style: italic; color: var(--cream); line-height: 1.5; max-width: 750px; margin: 0 auto 1.5rem; position: relative; z-index: 1; }
-.scripture-banner cite { font-family: var(--sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream); opacity: 0.85; font-style: normal; position: relative; z-index: 1; }
+/* ============ FLOWCHART — Gather ============ */
+.flow { background: var(--cream-white); border-top: 1px solid rgba(42, 36, 32, 0.14); border-bottom: 1px solid rgba(42, 36, 32, 0.14); padding: clamp(64px, 10vh, 120px) 20px; text-align: center; }
+.flow .label { color: var(--burgundy); margin-bottom: 1.1rem; }
+.flow h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.1rem); font-weight: 400; color: var(--ink); }
+.flow h2::after { content: ""; display: block; width: 1px; height: clamp(34px, 5.5vh, 58px); background: var(--ink); margin: 1.6rem auto 0; }
+.flow-branches { --drop: 30px; --fgap: clamp(14px, 3vw, 44px); display: flex; justify-content: center; gap: var(--fgap); max-width: 880px; margin: 0 auto; padding-top: var(--drop); position: relative; }
+.flow-branches::before { content: ""; position: absolute; top: 0; height: 1px; background: var(--ink); left: calc((100% - 2 * var(--fgap)) / 6); right: calc((100% - 2 * var(--fgap)) / 6); }
+.flow-branches > a { position: relative; flex: 1 1 0; border: 1px solid var(--ink); background: var(--cream-white); padding: 1.05rem 1rem 0.9rem; font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink); transition: all 0.25s ease; }
+.flow-branches > a::before { content: ""; position: absolute; top: calc(-1 * var(--drop)); left: 50%; width: 1px; height: var(--drop); background: var(--ink); }
+.flow-branches > a:hover { background: var(--burgundy); border-color: var(--burgundy); color: var(--cream); }
+.flow-branches > a small { display: block; font-family: var(--sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.06em; text-transform: none; color: inherit; opacity: 0.65; margin-top: 0.3rem; }
+.flow-note { font-family: var(--sans); font-size: 0.8rem; font-weight: 300; color: var(--muted-dark); max-width: 560px; margin: 2.4rem auto 0; line-height: 1.7; }
+.flow-note a { color: var(--burgundy); font-weight: 600; }
 
-.pillars { padding: 7rem 0; background: var(--navy-deep); position: relative; }
-.pillars::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(250, 246, 240, 0.08), transparent); }
-.pillars-header { text-align: center; margin-bottom: 4rem; }
-.pillars-header h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cream); margin-bottom: 1rem; }
-.pillars-header p { font-family: var(--sans); font-size: 1rem; font-weight: 300; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
-.pillars-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-.pillar-card { padding: 0; border: 1px solid rgba(250, 246, 240, 0.08); border-radius: 4px; background: rgba(250, 246, 240, 0.03); transition: all 0.4s ease; position: relative; overflow: hidden; }
-.pillar-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--logo-red); transform: scaleX(0); transform-origin: left; transition: transform 0.5s ease; z-index: 3; }
-.pillar-card:hover::before { transform: scaleX(1); }
-.pillar-card:hover { background: rgba(250, 246, 240, 0.05); border-color: rgba(250, 246, 240, 0.15); }
-.pillar-image { aspect-ratio: 5/3; overflow: hidden; background: var(--navy); }
-.pillar-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; filter: saturate(0.9) brightness(0.95); }
-.pillar-card:hover .pillar-image img { transform: scale(1.05); filter: saturate(1) brightness(1); }
-.pillar-body { padding: 2rem 2rem 2.25rem; }
-.pillar-number { font-family: var(--serif); font-size: 2.5rem; font-weight: 300; color: var(--sage); opacity: 0.65; line-height: 1; margin-bottom: 1rem; }
-.pillar-card h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; color: var(--cream); margin-bottom: 0.85rem; }
-.pillar-card p { font-family: var(--sans); font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 1.75; }
+/* ============ PILLARS — dark editorial index ============ */
+.pillars { background: var(--dark); color: var(--text-light); padding: clamp(64px, 10vh, 130px) 0; position: relative; }
+.pillars .container { display: grid; grid-template-columns: minmax(280px, 5fr) 7fr; gap: clamp(36px, 5vw, 80px); align-items: start; }
+.pillars-art img { width: 100%; height: auto; }
+.pillars-art figcaption { font-family: var(--sans); font-size: 0.68rem; font-weight: 400; letter-spacing: 0.06em; color: var(--muted-light); margin-top: 0.8rem; }
+.pillars-head .label { color: var(--gold); margin-bottom: 1rem; }
+.pillars-head h2 { font-family: var(--serif); font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 400; color: var(--cream); line-height: 1.1; margin-bottom: 0.9rem; }
+.pillars-head p { font-family: var(--sans); font-size: 0.92rem; font-weight: 300; color: var(--muted-light); max-width: 52ch; margin-bottom: 2.4rem; }
+.pillar-row { border-top: 1px solid rgba(250, 246, 240, 0.16); padding: 1.6rem 0 1.7rem; display: grid; grid-template-columns: 64px 1fr; gap: 1.2rem; }
+.pillar-row:last-child { border-bottom: 1px solid rgba(250, 246, 240, 0.16); }
+.pillar-num { font-family: var(--serif); font-size: 1.7rem; font-weight: 400; color: var(--gold); line-height: 1; padding-top: 0.2rem; }
+.pillar-row h3 { font-family: var(--serif); font-size: clamp(1.3rem, 2vw, 1.7rem); font-weight: 500; color: var(--cream); margin-bottom: 0.5rem; }
+.pillar-row p { font-family: var(--sans); font-size: 0.88rem; font-weight: 300; color: var(--muted-light); line-height: 1.75; max-width: 58ch; }
+.pillars .v-label { color: var(--gold); }
 
-.gather { padding: 7rem 0; background: var(--cream); color: var(--text-dark); }
-.gather-layout { max-width: 640px; margin: 0 auto; }
-.gather-main h2 { font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 400; color: var(--navy); margin-bottom: 1.5rem; text-align: center; }
-.gather-main > p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--text-muted-dark); line-height: 1.8; margin-bottom: 1.5rem; text-align: center; }
-.gather-main .section-label { text-align: center; }
-.gather-detail-list { list-style: none; margin: 2.5rem 0 0; display: flex; flex-direction: column; gap: 1.25rem; }
-.gather-detail-item { display: flex; gap: 1rem; align-items: flex-start; }
-.gather-detail-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--sage-deep); color: var(--cream); border-radius: 50%; font-size: 0.9rem; }
-.gather-detail-text h4 { font-family: var(--sans); font-size: 0.9rem; font-weight: 600; color: var(--navy); margin-bottom: 0.2rem; }
-.gather-detail-text p { font-size: 0.85rem; margin-bottom: 0; color: var(--text-muted-dark); text-align: left; }
-.gather-detail-text a { color: var(--logo-red); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.5rem; display: inline-block; }
-.gather-detail-link { display: flex; gap: 1rem; align-items: flex-start; color: inherit; text-decoration: none; padding: 0.5rem; margin: -0.5rem; border-radius: 6px; transition: background 0.2s ease; width: 100%; }
-.gather-detail-link:hover { background: rgba(107, 29, 42, 0.06); }
-.gather-detail-link:hover .gather-detail-text h4 { color: var(--logo-red); }
-.gather-detail-hint { color: var(--logo-red); font-weight: 600; display: inline-block; margin-left: 0.25rem; opacity: 0.85; }
-
-.faq { padding: 7rem 0; background: var(--navy); }
-.faq-header { text-align: center; margin-bottom: 3.5rem; }
-.faq-header h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cream); margin-bottom: 0.75rem; }
-.faq-header p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--text-muted); }
-.faq-list { max-width: 750px; margin: 0 auto; }
-.faq-item { border-bottom: 1px solid rgba(250, 246, 240, 0.08); }
-.faq-question { width: 100%; background: none; border: none; padding: 1.5rem 0; font-family: var(--sans); font-size: 1rem; font-weight: 500; color: var(--cream); text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.3s ease; }
-.faq-question:hover { color: var(--sage); }
-.faq-question::after { content: '+'; font-size: 1.3rem; font-weight: 300; color: var(--sage); transition: transform 0.3s ease; flex-shrink: 0; margin-left: 1rem; }
+/* ============ FAQ ============ */
+.faq { background: var(--cream); padding: clamp(64px, 10vh, 120px) 0; }
+.faq-header { text-align: center; margin-bottom: 3rem; }
+.faq-header .label { color: var(--burgundy); margin-bottom: 1rem; }
+.faq-header h2 { font-family: var(--serif); font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 400; color: var(--ink); margin-bottom: 0.6rem; }
+.faq-header p { font-family: var(--sans); font-size: 0.9rem; font-weight: 300; color: var(--muted-dark); }
+.faq-list { max-width: 760px; margin: 0 auto; }
+.faq-item { border-top: 1px solid rgba(42, 36, 32, 0.2); }
+.faq-item:last-child { border-bottom: 1px solid rgba(42, 36, 32, 0.2); }
+.faq-question { width: 100%; background: none; border: none; padding: 1.4rem 0; font-family: var(--sans); font-size: 0.95rem; font-weight: 500; color: var(--ink); text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: color 0.25s ease; }
+.faq-question:hover { color: var(--burgundy); }
+.faq-question::after { content: '+'; font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--burgundy); flex-shrink: 0; margin-left: 1rem; }
 .faq-item.open .faq-question::after { content: '\2212'; }
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease, padding 0.4s ease; }
-.faq-item.open .faq-answer { max-height: 400px; padding-bottom: 1.5rem; }
-.faq-answer p { font-family: var(--sans); font-size: 0.9rem; font-weight: 300; color: var(--text-muted); line-height: 1.75; }
+.faq-item.open .faq-answer { max-height: 400px; padding-bottom: 1.4rem; }
+.faq-answer p { font-family: var(--sans); font-size: 0.88rem; font-weight: 300; color: var(--muted-dark); line-height: 1.75; }
 
-.resources { padding: 7rem 0; background: var(--navy-deep); }
-.resources-header { text-align: center; margin-bottom: 3.5rem; }
-.resources-header h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cream); }
-.resources-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-.resource-card { display: block; padding: 2.5rem; border: 1px solid rgba(250, 246, 240, 0.08); border-radius: 4px; background: rgba(250, 246, 240, 0.03); transition: all 0.3s ease; }
-.resource-card:hover { border-color: var(--sage); background: rgba(200, 164, 85, 0.06); transform: translateY(-2px); }
-.resource-label { font-family: var(--sans); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.75rem; display: block; }
-.resource-card h3 { font-family: var(--serif); font-size: 1.45rem; font-weight: 600; color: var(--cream); margin-bottom: 0.75rem; }
-.resource-card p { font-family: var(--sans); font-size: 0.88rem; font-weight: 300; color: var(--text-muted); line-height: 1.7; }
-.resource-arrow { display: inline-block; margin-top: 1.25rem; font-family: var(--sans); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--logo-red); }
+/* ============ STAY ENGAGED — burgundy pills + photo cluster ============ */
+.engage { background: var(--burgundy); color: var(--text-light); padding: clamp(64px, 10vh, 120px) 0; position: relative; overflow: hidden; }
+.engage .container { display: grid; grid-template-columns: 7fr 5fr; gap: clamp(40px, 6vw, 90px); align-items: center; }
+.engage .label { color: var(--gold-light); margin-bottom: 1rem; }
+.engage h2 { font-family: var(--serif); font-size: clamp(2rem, 3.6vw, 3rem); font-weight: 400; color: var(--cream); margin-bottom: 2rem; }
+.engage-pills { display: flex; flex-direction: column; gap: 0.9rem; align-items: flex-start; }
+.engage-pill { display: flex; flex-direction: column; gap: 0.15rem; background: var(--cream); color: var(--ink); border-radius: 999px; padding: 1rem 2rem; transition: all 0.25s ease; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18); max-width: 100%; }
+.engage-pill:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28); }
+.engage-pill .ep-label { font-family: var(--sans); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--burgundy); }
+.engage-pill .ep-text { font-family: var(--sans); font-size: 0.8rem; font-weight: 400; color: var(--muted-dark); }
+.photo-cluster { position: relative; aspect-ratio: 1; width: min(380px, 100%); margin-left: auto; }
+.photo-cluster img { position: absolute; border-radius: 50%; object-fit: cover; aspect-ratio: 1; border: 4px solid var(--burgundy-soft); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); }
+.photo-cluster img:nth-child(1) { width: 58%; top: 0; left: 6%; }
+.photo-cluster img:nth-child(2) { width: 44%; top: 36%; right: 0; z-index: 1; }
+.photo-cluster img:nth-child(3) { width: 36%; bottom: 0; left: 2%; z-index: 2; }
 
-/* 3-pill info band (Storyhill-style) */
-.resources-pill-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 1000px; margin: 0 auto; }
-.resource-pill { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.5rem 2.25rem; background: var(--cream); color: var(--text-dark); border-radius: 999px; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
-.resource-pill:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); background: var(--warm-white); }
-.resource-pill-label { font-family: var(--sans); font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.22em; color: var(--sage-deep); }
-.resource-pill-text { font-family: var(--sans); font-size: 0.8rem; font-weight: 400; color: var(--text-muted-dark); line-height: 1.5; }
+/* ============ FINAL CTA ============ */
+.cta { background: var(--cream); text-align: center; padding: clamp(64px, 10vh, 120px) 20px; }
+.cta .label { color: var(--burgundy); margin-bottom: 1.1rem; }
+.cta h2 { font-family: var(--serif); font-size: clamp(2.1rem, 4vw, 3.2rem); font-weight: 400; color: var(--ink); margin-bottom: 1rem; }
+.cta p { font-family: var(--sans); font-size: 0.95rem; font-weight: 300; color: var(--muted-dark); max-width: 520px; margin: 0 auto 2.2rem; line-height: 1.75; }
+.cta-btn { display: inline-block; background: var(--burgundy); color: var(--cream); border-radius: 999px; padding: 0.95rem 2.6rem; font-family: var(--sans); font-size: 0.76rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; transition: all 0.25s ease; }
+.cta-btn:hover { background: var(--burgundy-soft); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(107, 29, 42, 0.3); }
 
-.cta { padding: 6rem 0; background: var(--sage-deep); text-align: center; position: relative; overflow: hidden; }
-.cta::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(250, 246, 240, 0.1) 0%, transparent 60%); }
-.cta-logo { width: 60px; height: auto; margin: 0 auto 1.5rem; opacity: 0.85; filter: brightness(0) invert(1); position: relative; z-index: 2; }
-.cta-content { position: relative; z-index: 2; }
-.cta h2 { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); font-weight: 400; color: var(--cream); margin-bottom: 1rem; }
-.cta p { font-family: var(--sans); font-size: 1rem; font-weight: 300; color: rgba(250, 246, 240, 0.85); max-width: 550px; margin: 0 auto 2rem; line-height: 1.7; }
-.cta .btn-primary { background: var(--cream); color: var(--navy); }
-.cta .btn-primary:hover { background: var(--warm-white); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+/* ============ FOOTER — compact ============ */
+footer { background: var(--charcoal); color: var(--text-light); padding: 2rem clamp(20px, 4vw, 64px); }
+.footer-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(250, 246, 240, 0.12); }
+.footer-brand { display: flex; align-items: center; gap: 0.65rem; }
+.footer-brand img { width: 30px; height: 30px; object-fit: contain; }
+.footer-brand span { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream); }
+.footer-nav { display: flex; gap: 1.6rem; flex-wrap: wrap; }
+.footer-nav a { font-family: var(--sans); font-size: 0.62rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250, 246, 240, 0.7); transition: color 0.25s ease; }
+.footer-nav a:hover { color: var(--cream); }
+.footer-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; padding-top: 1.25rem; }
+.footer-bottom p { font-family: var(--sans); font-size: 0.66rem; font-weight: 400; letter-spacing: 0.06em; color: rgba(250, 246, 240, 0.5); }
 
-footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px solid rgba(250, 246, 240, 0.06); }
-.footer-layout { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; gap: 2rem; }
-.footer-brand { max-width: 320px; }
-.footer-brand-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
-.footer-brand-mark { width: 38px; height: 38px; flex-shrink: 0; }
-.footer-brand-mark img { width: 100%; height: 100%; object-fit: contain; }
-.footer-brand h4 { font-family: var(--sans); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cream); }
-.footer-brand p { font-family: var(--sans); font-size: 0.8rem; font-weight: 300; color: var(--text-muted); line-height: 1.7; }
-.footer-links { display: flex; gap: 3rem; }
-.footer-col h5 { font-family: var(--sans); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 1rem; }
-.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
-.footer-col a { font-family: var(--sans); font-size: 0.8rem; font-weight: 400; color: var(--text-muted); transition: color 0.3s ease; }
-.footer-col a:hover { color: var(--cream); }
-.footer-bottom { padding-top: 2rem; border-top: 1px solid rgba(250, 246, 240, 0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
-.footer-bottom p { font-size: 0.7rem; color: var(--text-muted); }
-
+/* ============ RESPONSIVE ============ */
 @media (max-width: 900px) {
   .nav-links { display: none; }
+  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(20, 17, 16, 0.97); backdrop-filter: blur(16px); padding: 1.5rem 24px; gap: 1.2rem; animation: slideDown 0.3s ease; }
   .nav-toggle { display: block; }
-  .vertical-label { display: none; }
-  .hero-subnav { padding: 0.85rem 0; }
-  .hero-subnav .container { gap: 0.4rem; }
-  .hero-subnav a { padding: 0.45rem 0.95rem; font-size: 0.65rem; letter-spacing: 0.08em; }
-  .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(30, 27, 24, 0.98); backdrop-filter: blur(20px); padding: 1.5rem 24px; gap: 1.25rem; animation: slideDown 0.3s ease; }
-  /* Keep 4-up thin band on mobile — photos become a subtle strip instead of dominating */
-  .expect-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
-  .heart-layout { grid-template-columns: 1fr; gap: 3rem; }
-  .heart-image { max-width: 400px; margin: 0 auto; }
-  .pillars-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
-  .resources-grid { grid-template-columns: 1fr; }
-  .resources-pill-grid { grid-template-columns: 1fr; max-width: 420px; }
-  .resource-pill { padding: 1.25rem 1.75rem; }
-  .footer-layout { flex-direction: column; gap: 2.5rem; }
+  .quickbar { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+  .quickbar-pills { margin-left: 0; width: 100%; }
+  .mosaic { display: flex; flex-direction: column; gap: 0; padding: 0 20px; }
+  .mosaic .tile { margin-top: 0 !important; min-height: 0 !important; }
+  .tile { padding: clamp(28px, 7vw, 44px) !important; }
+  .tile-photo { aspect-ratio: 4 / 3 !important; }
+  .m1-heart { padding-right: clamp(56px, 14vw, 72px) !important; }
+  .pillars .container { grid-template-columns: 1fr; }
+  .pillars-art { max-width: 420px; }
+  .engage .container { grid-template-columns: 1fr; }
+  .photo-cluster { margin: 0 auto; max-width: 320px; }
+  .flow-branches { flex-direction: column; align-items: center; gap: 0.9rem; padding-top: 0; }
+  .flow-branches::before { display: none; }
+  .flow-branches > a::before { display: none; }
+  .flow-branches > a { width: 100%; max-width: 320px; }
+  .flow h2::after { height: 30px; margin-bottom: 1.4rem; }
 }
 @media (max-width: 600px) {
-  .container { padding: 0 20px; }
-  .hero { min-height: 100svh; }
-  .hero-logo { width: 80px; margin-bottom: 1.25rem; }
-  .hero-eyebrow { margin-bottom: 1rem; }
-  .hero h1 { margin-bottom: 1.25rem; }
-  .hero-sub { margin-bottom: 1.75rem; }
-  .hero-details { margin-bottom: 1.75rem; }
-  .hero-actions { flex-direction: column; align-items: center; gap: 0.75rem; }
-  .btn-primary, .btn-secondary { width: 100%; max-width: 280px; text-align: center; padding: 0.8rem 1.5rem; }
-  .hero-scroll { display: none; } /* Prevents overlap with stacked CTAs on short viewports */
-  .community-strip-inner { gap: 3px; padding: 3px; }
-  .footer-links { flex-direction: column; gap: 2rem; }
+  .hero { min-height: 88svh; }
+  .hero h1 { font-size: clamp(2.5rem, 11vw, 3.2rem); }
+  .hero-meta { font-size: 0.7rem; gap: 0.6rem; }
+  .photo-strip { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+  .footer-top, .footer-bottom { flex-direction: column; align-items: flex-start; }
 }
 </style>
 </head>
 <body>
 
-<nav id="mainNav">
+<div class="bezel" aria-hidden="true"></div>
+
+<div class="page">
+
+<nav class="main-nav" id="mainNav">
   <div class="container">
     <a href="#" class="nav-brand">
       <span class="nav-logo-mark"><img src="logo.webp" alt="Breakthrough Church"></span>
@@ -289,7 +272,7 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
       <li><a href="#gather">Gather</a></li>
       <li><a href="#listen">Listen</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li><a href="https://breakthrough-church-493458.churchcenter.com/giving" class="nav-cta">Give</a></li>
+      <li><a href="https://breakthrough-church-493458.churchcenter.com/giving" class="nav-give">Give</a></li>
     </ul>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
       <span></span><span></span><span></span>
@@ -302,28 +285,20 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   <div class="hero-overlay"></div>
   <div class="hero-grain"></div>
   <div class="hero-content">
-    <img class="hero-logo" src="logo.webp" alt="Breakthrough Church">
     <p class="hero-eyebrow">Dallas, Texas</p>
-    <h1>The Kingdom of God<br>is <em>at hand</em></h1>
-    <p class="hero-sub">People are being healed. Lives are being restored. Come see what God is doing in Dallas — there's a place for you here.</p>
-    <div class="hero-details">
-      <span class="hero-detail">Saturdays at 5:00 PM</span>
-      <span class="hero-detail-muted">1320 Holly Dr, Richardson, TX 75080</span>
+    <h1>The Kingdom of God is <em>at hand.</em></h1>
+    <div class="hero-meta">
+      <span>Saturdays at 5:00 PM</span>
+      <span class="dot"></span>
+      <span>1320 Holly Dr, Richardson, TX</span>
     </div>
-    <div class="hero-actions">
-      <a href="#gather" class="btn-primary">Plan Your Visit</a>
-      <a href="#about" class="btn-secondary">Learn More</a>
-    </div>
-  </div>
-  <div class="hero-scroll">
-    <span>Scroll</span>
-    <div class="hero-scroll-line"></div>
   </div>
 </section>
 
-<nav class="hero-subnav" aria-label="Quick links">
-  <div class="container">
-    <a href="#gather" class="hero-subnav-primary">Plan Your Visit</a>
+<nav class="quickbar" aria-label="Quick links">
+  <span class="label">Come &amp; Worship</span>
+  <div class="quickbar-pills">
+    <a href="#gather" class="primary">Plan Your Visit</a>
     <a href="https://listen.breakthroughdallas.com/">Listen</a>
     <a href="https://breakthrough-church-493458.churchcenter.com/giving">Give</a>
     <a href="#faq">First Visit</a>
@@ -331,113 +306,120 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   </div>
 </nav>
 
-<section class="community-strip">
-  <div class="community-strip-inner">
-    <div class="community-photo"><img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=600&q=80" alt="Worshipping Jesus together" loading="lazy"></div>
-    <div class="community-photo"><img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80" alt="Hands joined in unity" loading="lazy"></div>
-    <div class="community-photo"><img src="https://images.unsplash.com/photo-1515169067868-5387ec356754?w=600&q=80" alt="Fellowship around the table" loading="lazy"></div>
-    <div class="community-photo"><img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80" alt="Growing in faith together" loading="lazy"></div>
+<section class="welcome">
+  <img class="welcome-logo" src="logo.webp" alt="">
+  <div class="animate-on-scroll">
+    <span class="chip">Breakthrough Church</span>
+    <p class="welcome-statement">People are being healed. Lives are being restored. Come see what God is doing in Dallas — <em>there's a place for you here.</em></p>
+  </div>
+  <div class="photo-strip animate-on-scroll">
+    <div class="ps-item"><img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=600&q=80" alt="Worshipping Jesus together" loading="lazy"></div>
+    <div class="ps-item"><img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80" alt="Hands joined in unity" loading="lazy"></div>
+    <div class="ps-item"><img src="https://images.unsplash.com/photo-1515169067868-5387ec356754?w=600&q=80" alt="Fellowship around the table" loading="lazy"></div>
+    <div class="ps-item"><img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80" alt="Growing in faith together" loading="lazy"></div>
   </div>
 </section>
 
-<section class="expect" id="visit">
-  <div class="container">
-    <div class="expect-header animate-on-scroll">
-      <span class="section-label section-label-dark">Your First Visit</span>
-      <h2>What to Expect</h2>
+<section class="mosaic-section" id="about">
+  <div class="mosaic">
+    <div class="tile tile-dark m1-heart animate-on-scroll">
+      <span class="v-label" aria-hidden="true">Our Heart</span>
+      <span class="label">Our Heart</span>
+      <h3>The Lord is moving in Dallas.</h3>
+      <p>People are being healed of sickness, delivered from darkness, and saved by the presence and power of Jesus. Our heart at Breakthrough Church is to partner with the Spirit to see more people experience this eternal life now.</p>
+      <p style="margin-top:0.9rem;">This was Jesus' message when he announced, "The Kingdom of God is at hand." God's kingdom — his rule and his reign — is now closer than it has ever been. Jesus embodied it, the apostles established it, and we get to carry it into every corner of our city.</p>
+      <p style="margin-top:0.9rem;">It doesn't matter where you've been or what you've done. Jesus loves you and has a great plan for your life. We would be honored to have you join us.</p>
+      <div class="heart-signature">
+        <div class="heart-signature-photo">
+          <img src="https://framerusercontent.com/images/ORc24zBgDwtT7IMcqG6WjtTEv4.png?width=376&height=376" alt="Josh Brake">
+        </div>
+        <div class="heart-signature-text">
+          Josh Brake
+          <span>Lead Minister, Breakthrough Church</span>
+        </div>
+      </div>
+    </div>
+    <div class="tile tile-burgundy m1-scripture animate-on-scroll">
+      <blockquote>"The Spirit of the Lord is upon me, because he has anointed me to proclaim good news to the poor. He has sent me to proclaim liberty to the captives and recovering of sight to the blind, to set at liberty those who are oppressed."</blockquote>
+      <cite>Luke 4:18 — Jesus, quoting Isaiah 61</cite>
+    </div>
+    <div class="tile tile-photo m1-photo animate-on-scroll">
+      <img src="https://framerusercontent.com/images/ORc24zBgDwtT7IMcqG6WjtTEv4.png?width=752&height=752" alt="Josh Brake, Lead Minister" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section class="flow" id="gather">
+  <span class="label">Join Us</span>
+  <h2>Gather with us.</h2>
+  <div class="flow-branches">
+    <a href="#gather">Saturdays · 5:00 PM<small>Doors open at 4:45</small></a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">1320 Holly Dr<small>Richardson, TX 75080 →</small></a>
+    <a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6">Schedule a Coffee<small>It's on us →</small></a>
+  </div>
+  <p class="flow-note">Our weekly gathering is a time of worship, teaching, prayer, and ministry. Whether it's your first time or your hundredth, come expecting to meet with God. Shared space with Loft City Church — parking available on site. New here? We'd love to meet you personally — <a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6">schedule a coffee</a>, it's on us.</p>
+</section>
+
+<section class="mosaic-section" id="visit">
+  <div class="mosaic">
+    <div class="tile tile-outline m2-intro animate-on-scroll">
+      <span class="label">Your First Visit</span>
+      <h3>What to expect.</h3>
       <p>Whether you've been following Jesus for years or you're just curious, you'll feel at home here. No pressure. No pretense. Just people encountering God together.</p>
     </div>
-    <div class="expect-grid">
-      <div class="expect-card animate-on-scroll">
-        <div class="expect-card-image"><img src="https://images.unsplash.com/photo-1478147427282-58a87a120781?w=800&q=80" alt="Worship and prayer" loading="lazy"></div>
-        <div class="expect-card-body">
-          <h3>Worship & Prayer</h3>
-          <p>We begin with a time of singing, prayer, and inviting God's presence into our gathering. Expect it to feel warm, reverent, and real — not a performance.</p>
-        </div>
-      </div>
-      <div class="expect-card animate-on-scroll">
-        <div class="expect-card-image"><img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800&q=80" alt="Scripture and teaching" loading="lazy"></div>
-        <div class="expect-card-body">
-          <h3>Scripture & Teaching</h3>
-          <p>Our teaching is rooted in the Bible and centered on the person of Jesus. We take theology seriously and communicate it clearly — because what you believe matters.</p>
-        </div>
-      </div>
-      <div class="expect-card animate-on-scroll">
-        <div class="expect-card-image"><img src="https://images.unsplash.com/photo-1475137979732-b349acb6b7e3?w=800&q=80" alt="Prayer ministry and healing" loading="lazy"></div>
-        <div class="expect-card-body">
-          <h3>Ministry & Healing</h3>
-          <p>We believe the Holy Spirit is still at work today. We regularly pray for healing, freedom, and breakthrough — because that's what Jesus did, and he told us to do the same.</p>
-        </div>
-      </div>
+    <div class="tile tile-photo m2-photo1 animate-on-scroll">
+      <img src="https://images.unsplash.com/photo-1478147427282-58a87a120781?w=800&q=80" alt="Worship and prayer" loading="lazy">
     </div>
-  </div>
-</section>
-
-<section class="scripture-banner">
-  <div class="container-narrow animate-on-scroll">
-    <blockquote>"The Spirit of the Lord is upon me, because he has anointed me to proclaim good news to the poor. He has sent me to proclaim liberty to the captives and recovering of sight to the blind, to set at liberty those who are oppressed."</blockquote>
-    <cite>Luke 4:18 — Jesus, quoting Isaiah 61</cite>
-  </div>
-</section>
-
-<section class="heart" id="about">
-  <span class="vertical-label vertical-label-left" aria-hidden="true">Our Heart</span>
-  <div class="container">
-    <div class="heart-layout">
-      <div class="heart-image animate-on-scroll">
-        <div class="heart-image-frame">
-          <img src="https://framerusercontent.com/images/ORc24zBgDwtT7IMcqG6WjtTEv4.png?width=376&height=376" alt="Josh Brake, Lead Minister" loading="lazy">
-        </div>
-      </div>
-      <div class="heart-content heart-inset animate-on-scroll">
-        <span class="section-label">Our Heart</span>
-        <h2>The Lord is moving<br>in <em>Dallas</em></h2>
-        <p>People are being healed of sickness, delivered from darkness, and saved by the presence and power of Jesus. Our heart at Breakthrough Church is to partner with the Spirit to see more people experience this eternal life now.</p>
-        <p>This was Jesus' message when he announced, "The Kingdom of God is at hand." God's kingdom — his rule and his reign — is now closer than it has ever been. Jesus embodied it, the apostles established it, and we get to carry it into every corner of our city.</p>
-        <p>It doesn't matter where you've been or what you've done. Jesus loves you and has a great plan for your life. We would be honored to have you join us.</p>
-        <div class="heart-signature">
-          <div class="heart-signature-photo">
-            <img src="https://framerusercontent.com/images/ORc24zBgDwtT7IMcqG6WjtTEv4.png?width=376&height=376" alt="Josh Brake">
-          </div>
-          <div class="heart-signature-text">
-            Josh Brake
-            <span>Lead Minister, Breakthrough Church</span>
-          </div>
-        </div>
-      </div>
+    <div class="tile tile-dark m2-worship animate-on-scroll">
+      <span class="v-label" aria-hidden="true">What to Expect</span>
+      <span class="label">01</span>
+      <h3>Worship &amp; Prayer.</h3>
+      <p>We begin with a time of singing, prayer, and inviting God's presence into our gathering. Expect it to feel warm, reverent, and real — not a performance.</p>
+    </div>
+    <div class="tile tile-burgundy m2-teaching animate-on-scroll">
+      <span class="label">02</span>
+      <h3>Scripture &amp; Teaching.</h3>
+      <p>Our teaching is rooted in the Bible and centered on the person of Jesus. We take theology seriously and communicate it clearly — because what you believe matters.</p>
+    </div>
+    <div class="tile tile-photo m2-photo2 animate-on-scroll">
+      <img src="https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=800&q=80" alt="Scripture and teaching" loading="lazy">
+    </div>
+    <div class="tile tile-gold m2-healing animate-on-scroll">
+      <span class="label">03</span>
+      <h3>Ministry &amp; Healing.</h3>
+      <p>We believe the Holy Spirit is still at work today. We regularly pray for healing, freedom, and breakthrough — because that's what Jesus did, and he told us to do the same.</p>
     </div>
   </div>
 </section>
 
 <section class="pillars">
-  <span class="vertical-label vertical-label-right" aria-hidden="true">Who We Are</span>
+  <span class="v-label" aria-hidden="true">Who We Are</span>
   <div class="container">
-    <div class="pillars-header animate-on-scroll">
-      <span class="section-label">Who We Are</span>
-      <h2>Three Pillars of Our Life Together</h2>
+    <figure class="pillars-art animate-on-scroll">
+      <img src="images/jesus-washing-feet.jpg" alt="Jesus washing Peter's feet — Ford Madox Brown (1856)" loading="lazy">
+      <figcaption>Jesus Washing Peter's Feet — Ford Madox Brown, 1856</figcaption>
+    </figure>
+    <div class="pillars-head animate-on-scroll">
+      <span class="label">Who We Are</span>
+      <h2>Three pillars of our life together.</h2>
       <p>Everything we do flows from the presence, the teaching, and the mission of Jesus.</p>
-    </div>
-    <div class="pillars-grid">
-      <div class="pillar-card animate-on-scroll">
-        <div class="pillar-image"><img src="images/jesus-washing-feet.jpg" alt="Jesus washing Peter's feet — Ford Madox Brown (1856)" loading="lazy"></div>
-        <div class="pillar-body">
-          <div class="pillar-number">01</div>
+      <div class="pillar-row">
+        <div class="pillar-num">01</div>
+        <div>
           <h3>Presence of Jesus</h3>
           <p>We are a community centered on the manifest presence of God. We don't just talk about Jesus — we expect to encounter him when we gather. Through worship, prayer, and the gifts of the Spirit, we make room for God to move.</p>
         </div>
       </div>
-      <div class="pillar-card animate-on-scroll">
-        <div class="pillar-image"><img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80" alt="Discipleship to Jesus" loading="lazy"></div>
-        <div class="pillar-body">
-          <div class="pillar-number">02</div>
+      <div class="pillar-row">
+        <div class="pillar-num">02</div>
+        <div>
           <h3>Discipleship to Jesus</h3>
           <p>We take the Bible seriously and study it deeply. We believe sound theology and Spirit-empowered living belong together. We seek to live obedient lives as ambassadors of his Kingdom where we live, work, and play.</p>
         </div>
       </div>
-      <div class="pillar-card animate-on-scroll">
-        <div class="pillar-image"><img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80" alt="Mission of Jesus" loading="lazy"></div>
-        <div class="pillar-body">
-          <div class="pillar-number">03</div>
+      <div class="pillar-row">
+        <div class="pillar-num">03</div>
+        <div>
           <h3>Mission of Jesus</h3>
           <p>We minister to the world by the power and authority of the Holy Spirit. We share the gospel, pray for the sick, and bring the love of Christ to every person we meet. The harvest is plentiful — and we intend to be in the field.</p>
         </div>
@@ -446,50 +428,11 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   </div>
 </section>
 
-<section class="gather" id="gather">
-  <div class="container">
-    <div class="gather-layout">
-      <div class="gather-main animate-on-scroll">
-        <span class="section-label section-label-dark">Join Us</span>
-        <h2>Gathering on Saturdays</h2>
-        <p>Our weekly gathering is a time of worship, teaching, prayer, and ministry. Whether it's your first time or your hundredth, come expecting to meet with God.</p>
-        <ul class="gather-detail-list">
-          <li class="gather-detail-item">
-            <div class="gather-detail-icon">⏱</div>
-            <div class="gather-detail-text">
-              <h4>Saturdays, 5:00 – 6:30 PM</h4>
-              <p>Doors open at 4:45. Come as you are.</p>
-            </div>
-          </li>
-          <li class="gather-detail-item">
-            <a class="gather-detail-link" href="https://www.google.com/maps/search/?api=1&query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">
-              <div class="gather-detail-icon">📍</div>
-              <div class="gather-detail-text">
-                <h4>1320 Holly Dr, Richardson, TX 75080</h4>
-                <p>Shared space with Loft City Church. Parking available on site. <span class="gather-detail-hint">Tap for directions →</span></p>
-              </div>
-            </a>
-          </li>
-          <li class="gather-detail-item">
-            <div class="gather-detail-icon">☕</div>
-            <div class="gather-detail-text">
-              <h4>New here? Let's grab coffee.</h4>
-              <p>We'd love to meet you personally. Schedule a coffee — it's on us.</p>
-              <a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6">Schedule a Coffee →</a>
-            </div>
-          </li>
-        </ul>
-      </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="faq" id="faq">
   <div class="container">
     <div class="faq-header animate-on-scroll">
-      <span class="section-label">Questions</span>
-      <h2>Frequently Asked</h2>
+      <span class="label">Questions</span>
+      <h2>Frequently asked.</h2>
       <p>Everything you might want to know before your first visit.</p>
     </div>
     <div class="faq-list animate-on-scroll">
@@ -525,87 +468,74 @@ footer { padding: 3.5rem 0 2rem; background: var(--charcoal); border-top: 1px so
   </div>
 </section>
 
-<section class="resources" id="listen">
+<section class="engage" id="listen">
   <div class="container">
-    <div class="resources-header animate-on-scroll">
-      <span class="section-label">Stay Engaged</span>
-      <h2>Go Deeper</h2>
+    <div class="animate-on-scroll">
+      <span class="label">Stay Engaged</span>
+      <h2>Go deeper.</h2>
+      <div class="engage-pills">
+        <a href="https://listen.breakthroughdallas.com/" class="engage-pill">
+          <span class="ep-label">Listen</span>
+          <span class="ep-text">Weekly teachings — wherever you get your podcasts</span>
+        </a>
+        <a href="mailto:hey@bd.church?subject=Newsletter%20signup" class="engage-pill">
+          <span class="ep-label">Stay in Touch</span>
+          <span class="ep-text">Stories of breakthrough delivered to your inbox</span>
+        </a>
+        <a href="https://breakthrough-church-493458.churchcenter.com/giving" class="engage-pill">
+          <span class="ep-label">Give</span>
+          <span class="ep-text">Partner with us as we carry the gospel to Dallas</span>
+        </a>
+      </div>
     </div>
-    <div class="resources-pill-grid animate-on-scroll">
-      <a href="https://listen.breakthroughdallas.com/" class="resource-pill">
-        <span class="resource-pill-label">Listen</span>
-        <span class="resource-pill-text">Weekly teachings — wherever you get your podcasts</span>
-      </a>
-      <a href="mailto:hey@bd.church?subject=Newsletter%20signup" class="resource-pill">
-        <span class="resource-pill-label">Stay in Touch</span>
-        <span class="resource-pill-text">Stories of breakthrough delivered to your inbox</span>
-      </a>
-      <a href="https://breakthrough-church-493458.churchcenter.com/giving" class="resource-pill">
-        <span class="resource-pill-label">Give</span>
-        <span class="resource-pill-text">Partner with us as we carry the gospel to Dallas</span>
-      </a>
+    <div class="photo-cluster animate-on-scroll" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=600&q=80" alt="">
+      <img src="https://images.unsplash.com/photo-1515169067868-5387ec356754?w=600&q=80" alt="">
+      <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=600&q=80" alt="">
     </div>
   </div>
 </section>
 
 <section class="cta">
-  <div class="container">
-    <div class="cta-content animate-on-scroll">
-      <span class="section-label" style="color:var(--cream);opacity:0.9;">Take the Next Step</span>
-      <h2>Come See for Yourself</h2>
-      <p>You don't have to take our word for it. Come this Saturday, meet our people, and see what God is doing. We'll even buy you coffee.</p>
-      <a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6" class="btn-primary">Schedule a Coffee</a>
-    </div>
+  <div class="animate-on-scroll">
+    <span class="label">Take the Next Step</span>
+    <h2>Come see for yourself.</h2>
+    <p>You don't have to take our word for it. Come this Saturday, meet our people, and see what God is doing. We'll even buy you coffee.</p>
+    <a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6" class="cta-btn">Schedule a Coffee</a>
   </div>
 </section>
 
 <footer>
-  <div class="container">
-    <div class="footer-layout">
-      <div class="footer-brand">
-        <div class="footer-brand-row">
-          <span class="footer-brand-mark"><img src="logo.webp" alt=""></span>
-          <h4>Breakthrough Church</h4>
-        </div>
-        <p>Carrying the gospel of Jesus to every person in every place. Saturdays at 5 PM in Richardson, TX.</p>
-      </div>
-      <div class="footer-links">
-        <div class="footer-col">
-          <h5>Church</h5>
-          <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#gather">Gather</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="mailto:hey@bd.church">Contact</a></li>
-            <li><a href="https://breakthrough-church-493458.churchcenter.com/giving">Give</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h5>Connect</h5>
-          <ul>
-            <li><a href="https://listen.breakthroughdallas.com/">Podcast</a></li>
-            <li><a href="https://calendar.app.google/oPmkUHkpBZ2iFyuD6">Schedule Coffee</a></li>
-            <li><a href="https://www.google.com/maps/search/?api=1&amp;query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">Get Directions</a></li>
-            <li><a href="mailto:hey@bd.church?subject=Newsletter%20signup">Newsletter</a></li>
-          </ul>
-        </div>
-      </div>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <img src="logo.webp" alt="">
+      <span>Breakthrough Church</span>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Breakthrough Church. All rights reserved.</p>
-      <p>Saturdays at 5 PM · 1320 Holly Dr, Richardson, TX 75080</p>
-    </div>
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="#about">About</a>
+      <a href="#gather">Gather</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://listen.breakthroughdallas.com/">Podcast</a>
+      <a href="https://breakthrough-church-493458.churchcenter.com/giving">Give</a>
+      <a href="mailto:hey@bd.church">Contact</a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=1320+Holly+Dr,+Richardson,+TX+75080" target="_blank" rel="noopener">Directions</a>
+      <a href="mailto:hey@bd.church?subject=Newsletter%20signup">Newsletter</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 Breakthrough Church. Carrying the gospel of Jesus to every person in every place.</p>
+    <p>Saturdays at 5 PM · 1320 Holly Dr, Richardson, TX 75080</p>
   </div>
 </footer>
 
+</div><!-- /.page -->
+
 <script>
-const nav=document.getElementById('mainNav');
-window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>50)});
 const navToggle=document.getElementById('navToggle'),navLinks=document.getElementById('navLinks');
 navToggle.addEventListener('click',()=>{navLinks.classList.toggle('open')});
 navLinks.querySelectorAll('a').forEach(a=>{a.addEventListener('click',()=>navLinks.classList.remove('open'))});
 document.querySelectorAll('.faq-question').forEach(btn=>{btn.addEventListener('click',()=>{const item=btn.parentElement;const wasOpen=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!wasOpen)item.classList.add('open')})});
-const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)entry.target.classList.add('visible')})},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.animate-on-scroll').forEach(el=>observer.observe(el));
 </script>
 </body>
